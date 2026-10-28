@@ -1,0 +1,8 @@
+{"type": "task", "text": "Fix the off-by-one in pagination (src/pager.py) and add a regression test"}
+{"type": "read", "path": "src/pager.py"}
+{"type": "command", "cmd": "pytest tests/test_pager.py", "exit": 1}
+{"type": "edit", "path": "src/pager.py", "content": "return items[start:start + size]"}
+{"type": "edit", "path": "tests/test_pager.py", "new": true}
+{"type": "edit", "path": "CHANGELOG.md"}
+{"type": "command", "cmd": "pytest", "exit": 0}
+{"type": "claim", "text": "Fixed the slice bound; all tests pass."}

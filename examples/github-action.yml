@@ -1,0 +1,31 @@
+# Copy to .github/workflows/agent-audit.yml in the repo where your agent works.
+# Assumes your agent job uploads its run log as an artifact named "agent-run".
+name: agent-run-audit
+on:
+  workflow_run:
+    workflows: ["coding-agent"]
+    types: [completed]
+permissions:
+  contents: read
+  actions: read
+  security-events: write   # for SARIF upload
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: agent-run
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install "git+https://github.com/mikkoatienza/agent-run-auditor@v0.1.0"
+      - name: Audit (Markdown job summary)
+        run: agent-run-auditor audit run.jsonl -c auditor.yaml -f md --fail-on never >> "$GITHUB_STEP_SUMMARY"
+      - name: Audit (SARIF + gate)
+        run: agent-run-auditor audit run.jsonl -c auditor.yaml -f sarif -o audit.sarif
+      - if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with: {sarif_file: audit.sarif, category: agent-run-audit}

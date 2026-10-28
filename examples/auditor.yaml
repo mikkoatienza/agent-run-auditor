@@ -1,0 +1,20 @@
+fail_on: error
+claims: keyword
+
+rules:
+  read-before-edit:
+    ignore: ["tests/*", "CHANGELOG.md"]
+  scope:
+    allow: ["src/*", "tests/*", "CHANGELOG.md"]
+    max_files: 8
+
+custom:
+  - id: changelog-updated
+    event: edit
+    pattern: "CHANGELOG\\.md$"
+    require: true
+    severity: info
+    message: CHANGELOG.md was not updated
+
+plugins:
+  - plugins/no_todo.py
