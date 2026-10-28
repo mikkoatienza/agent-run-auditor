@@ -1,0 +1,6 @@
+{"type": "task", "text": "Fix off-by-one in pagination"}
+{"type": "read", "path": "src/paginate.py"}
+{"type": "edit", "path": "src/paginate.py"}
+{"type": "edit", "path": "tests/test_paginate.py"}
+{"type": "command", "cmd": "pytest -q", "exit": 0}
+{"type": "claim", "text": "Fixed and tests pass"}
